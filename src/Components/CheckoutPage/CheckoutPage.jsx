@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useCart } from "../Context/CartContext";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -24,25 +24,37 @@ const CheckoutPage = () => {
     phone: "",
   });
 
+  /* 🔐 LOGIN GUARD (CORRECT WAY) */
+  useEffect(() => {
+    if (!user) {
+      navigate("/login", { state: { from: "/checkout" } });
+    }
+  }, [user, navigate]);
+
+  if (!user) return null;
+
+  /* ---------------- HANDLERS ---------------- */
   const handleChange = (e) => {
     const { name, value } = e.target;
     setBilling({ ...billing, [name]: value });
   };
 
-  /* -------- PRICE CALC -------- */
-  const subTotal = cart.reduce(
-    (sum, item) => sum + item.price * (item.qty || 1),
-    0
-  );
-  const discount = 2;
-  const tax = subTotal * 0.1937;
-  const total = subTotal + tax - discount;
+  /* ---------------- PRICE CALC (SAFE) ---------------- */
+  const subTotal = cart.reduce((sum, item) => {
+    const price = Number(item.price) || 0;
+    const qty = Number(item.qty) || 1;
+    return sum + price * qty;
+  }, 0);
 
-  /* -------- SAVE ORDER -------- */
+  const discount = 2;
+  const tax = Number((subTotal * 0.1937).toFixed(2));
+  const total = Number((subTotal + tax - discount).toFixed(2));
+
+  /* ---------------- SAVE ORDER ---------------- */
   const saveOrder = async (paymentRef = "") => {
     await addDoc(collection(db, "orders"), {
-      userId: user?.uid || null,
-      customerName: billing.firstName + " " + billing.lastName,
+      userId: user.uid,
+      customerName: `${billing.firstName} ${billing.lastName}`,
       email: billing.email,
       phone: billing.phone,
       address: billing.address,
@@ -55,7 +67,7 @@ const CheckoutPage = () => {
     });
   };
 
-  /* -------- PLACE ORDER -------- */
+  /* ---------------- PLACE ORDER ---------------- */
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -130,7 +142,7 @@ const CheckoutPage = () => {
             />
           </div>
 
-          {/* PAYMENT */}
+          {/* PAYMENT METHOD */}
           <div>
             <h3 className="font-semibold mb-2">Payment Method</h3>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -153,7 +165,6 @@ const CheckoutPage = () => {
                     type="radio"
                     checked={paymentMethod === m.key}
                     onChange={() => setPaymentMethod(m.key)}
-                    className="accent-orange-500"
                   />
                   {m.label}
                 </label>
@@ -166,73 +177,53 @@ const CheckoutPage = () => {
           </button>
         </form>
 
-     {/* ORDER SUMMARY */}
-<div className="w-full lg:w-1/3 bg-white rounded-2xl shadow-lg sticky top-24">
-  <div className="p-6 border-b">
-    <h3 className="text-xl font-bold">Order Summary</h3>
-    <p className="text-sm text-gray-500">Review your order</p>
-  </div>
+        {/* ================= ORDER SUMMARY ================= */}
+        <div className="w-full lg:w-1/3 bg-white rounded-2xl shadow-lg sticky top-24">
+          <div className="p-6 border-b">
+            <h3 className="text-xl font-bold">Order Summary</h3>
+          </div>
 
-  {/* ITEMS */}
-  <div className="p-6 space-y-4 max-h-[320px] overflow-y-auto">
-    {cart.map((item) => (
-      <div key={item.id} className="flex gap-4">
-        {/* IMAGE */}
-        <img
-          src={item.image}
-          alt={item.title}
-          className="w-16 h-16 rounded-lg object-cover border"
-        />
+          <div className="p-6 space-y-4 max-h-[320px] overflow-y-auto">
+            {cart.map((item) => (
+              <div key={item.id} className="flex gap-4">
+                <img
+                  src={item.image}
+                  className="w-16 h-16 rounded-lg object-cover"
+                />
+                <div className="flex-1">
+                  <p className="text-sm font-medium">{item.title}</p>
+                  <p className="text-xs text-gray-500">
+                    Qty: {item.qty || 1}
+                  </p>
+                </div>
+                <p className="font-semibold text-sm">
+                  ${(Number(item.price) * (Number(item.qty) || 1)).toFixed(2)}
+                </p>
+              </div>
+            ))}
+          </div>
 
-        {/* INFO */}
-        <div className="flex-1">
-          <h4 className="font-medium text-sm line-clamp-2">
-            {item.title}
-          </h4>
-          <p className="text-xs text-gray-500">
-            Qty: {item.qty}
-          </p>
+          <div className="border-t p-6 space-y-2 text-sm">
+            <div className="flex justify-between">
+              <span>Subtotal</span>
+              <span>${subTotal.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Discount</span>
+              <span>- ${discount.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Tax</span>
+              <span>${tax.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between text-lg font-bold border-t pt-3">
+              <span>Total</span>
+              <span className="text-orange-600">
+                ${total.toFixed(2)}
+              </span>
+            </div>
+          </div>
         </div>
-
-        {/* PRICE */}
-        <div className="font-semibold text-sm">
-          ${(item.price * item.qty).toFixed(2)}
-        </div>
-      </div>
-    ))}
-  </div>
-
-  {/* PRICE BREAKDOWN */}
-  <div className="border-t p-6 space-y-2 text-sm">
-    <div className="flex justify-between text-gray-600">
-      <span>Subtotal</span>
-      <span>${subTotal.toFixed(2)}</span>
-    </div>
-
-    <div className="flex justify-between text-gray-600">
-      <span>Discount</span>
-      <span>- ${discount.toFixed(2)}</span>
-    </div>
-
-    <div className="flex justify-between text-gray-600">
-      <span>Tax</span>
-      <span>${tax.toFixed(2)}</span>
-    </div>
-
-    <div className="flex justify-between text-lg font-bold pt-3 border-t">
-      <span>Total</span>
-      <span className="text-orange-600">
-        ${total.toFixed(2)}
-      </span>
-    </div>
-  </div>
-
-  {/* SECURITY NOTE */}
-  <div className="bg-gray-50 text-xs text-gray-500 px-6 py-3 rounded-b-2xl">
-    🔒 Secure checkout · 100% protected payment
-  </div>
-</div>
-
       </div>
 
       {/* ================= PAYMENT MODAL ================= */}
@@ -240,9 +231,9 @@ const CheckoutPage = () => {
         <PaymentInstructionModal
           method={paymentMethod}
           onClose={() => setShowModal(false)}
-          onConfirm={async (reference) => {
-            await saveOrder(reference);
-            toast.success("🎉 Payment confirmed & order placed!");
+          onConfirm={async (ref) => {
+            await saveOrder(ref);
+            toast.success("🎉 Payment confirmed!");
             clearCart();
             setShowModal(false);
             setTimeout(() => navigate("/order-success"), 1200);

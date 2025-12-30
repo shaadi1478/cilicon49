@@ -199,7 +199,7 @@ const Navbar = () => {
                     <Link
                       to="/profile"
                       onClick={() => setUserMenuOpen(false)}
-                      className="block px-4 py-2 text-sm hover:bg-gray-100"
+                      className="block px-4 py-2 text-black text-sm hover:bg-gray-100"
                     >
                       Profile
                     </Link>

@@ -2,31 +2,34 @@ import { useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay } from "swiper/modules";
 import { motion } from "framer-motion";
-import computer from '../../assets/computer.png'
-import phone from '../../assets/phone.png'
-import headphone from '../../assets/headphone.png'
-import keyboard from '../../assets/keyboard.png'
-import camera from '../../assets/camera.png'
-import tv from '../../assets/tv.png'
+import { useNavigate } from "react-router-dom";
+
+import computer from "../../assets/computer.png";
+import phone from "../../assets/phone.png";
+import headphone from "../../assets/headphone.png";
+import keyboard from "../../assets/keyboard.png";
+import camera from "../../assets/camera.png";
+import tv from "../../assets/tv.png";
 
 import "swiper/css";
 import "swiper/css/navigation";
 
 const categories = [
-  { title: "Computer & Laptop", image: computer },
-  { title: "SmartPhone", image: phone },
-  { title: "Headphones", image: headphone },
-  { title: "KeyBoard & Mouse", image: keyboard },
-  { title: "Camera & Photo", image: camera },
-  { title: "TV & Homes", image: tv },
+  { title: "Laptop & PC", image: computer },
+  { title: "Smart Phone", image: phone },
+  { title: "Headphone", image: headphone },
+  { title: "Electronics Devices", image: keyboard },
+  { title: "Camera", image: camera },
+  { title: "TV", image: tv },
 ];
 
 const Category = () => {
   const prevRef = useRef(null);
   const nextRef = useRef(null);
+  const navigate = useNavigate();
 
   return (
-    <section className="">
+    <section>
       <div className="max-w-7xl mx-auto px-4">
         <h2 className="text-2xl font-semibold text-center mb-8">
           Shop with Categories
@@ -35,11 +38,7 @@ const Category = () => {
         <div className="relative">
           <Swiper
             modules={[Navigation, Autoplay]}
-            autoplay={{
-              delay: 2500,
-              disableOnInteraction: false,
-              pauseOnMouseEnter: true,
-            }}
+            autoplay={{ delay: 2500, pauseOnMouseEnter: true }}
             spaceBetween={16}
             breakpoints={{
               0: { slidesPerView: 1 },
@@ -59,27 +58,20 @@ const Category = () => {
             {categories.map((item, index) => (
               <SwiperSlide key={index}>
                 <motion.div
-                  whileHover={{ y: -8, scale: 1.03 }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 300,
-                    damping: 18,
-                  }}
-                  className="group h-full  p-4 flex flex-col items-center justify-center text-center shadow-xl shadow-indigo-500/50"
+                  whileHover={{ y: -8, scale: 1.05 }}
+                  onClick={() =>
+                    navigate("/shop", {
+                      state: { category: item.title },
+                    })
+                  }
+                  className="cursor-pointer p-4 flex flex-col items-center justify-center text-center bg-white rounded-xl shadow hover:shadow-xl transition"
                 >
-                  <motion.img
+                  <img
                     src={item.image}
                     alt={item.title}
                     className="h-20 object-contain mb-3"
-                    whileHover={{ scale: 1.15 }}
-                    transition={{
-                      type: "spring",
-                      stiffness: 260,
-                      damping: 15,
-                    }}
                   />
-
-                  <p className="text-sm font-medium text-gray-700 group-hover:text-orange-500 transition-colors">
+                  <p className="text-sm font-medium text-gray-700 hover:text-orange-500">
                     {item.title}
                   </p>
                 </motion.div>
@@ -87,17 +79,17 @@ const Category = () => {
             ))}
           </Swiper>
 
-          {/* Custom Navigation Buttons */}
+          {/* NAV BUTTONS */}
           <button
             ref={prevRef}
-            className="absolute -left-4 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-orange-500 text-white flex items-center justify-center shadow z-10 hover:bg-orange-600 transition"
+            className="absolute -left-4 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-orange-500 text-white"
           >
             ‹
           </button>
 
           <button
             ref={nextRef}
-            className="absolute -right-4 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-orange-500 text-white flex items-center justify-center shadow z-10 hover:bg-orange-600 transition"
+            className="absolute -right-4 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-orange-500 text-white"
           >
             ›
           </button>

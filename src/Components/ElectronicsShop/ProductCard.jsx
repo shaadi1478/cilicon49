@@ -1,61 +1,73 @@
 import { Heart, ShoppingCart } from "lucide-react";
 import { useCart, useWishlist } from "../Context/CartContext";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useRef } from "react";
+import { motion } from "framer-motion";
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
   const { toggleWishlist, wishlist } = useWishlist();
+  const imgRef = useRef(null);
 
-  const isWishlisted = wishlist.some((item) => item.id === product.id);
+  const isWishlisted = wishlist.some(i => i.id === product.id);
+
+  const handleAdd = () => {
+    addToCart({ ...product, qty: 1 });
+    toast.success("Added to cart");
+
+    // Fly animation
+    imgRef.current.classList.add("animate-fly");
+    setTimeout(() => imgRef.current.classList.remove("animate-fly"), 700);
+  };
 
   return (
-    <div className="group bg-white rounded-lg shadow hover:shadow-lg transition relative overflow-hidden">
-      {/* IMAGE */}
+    <div className="relative bg-white rounded-xl shadow hover:shadow-md transition p-3">
+
+      {/* ⏱️ LIMITED STOCK */}
+      {product.stock <= 5 && (
+        <span className="absolute top-3 left-3 bg-red-500 text-white text-xs px-2 py-1 rounded">
+          Only {product.stock} left
+        </span>
+      )}
+
       <Link to={`/product/${product.id}`}>
-        <img
+        <motion.img
+          ref={imgRef}
           src={product.image}
           alt={product.title}
-          className="w-full h-44 object-contain p-4"
+          className="w-full h-40 object-contain p-4"
+          whileHover={{ scale: 1.05 }}
         />
+         <h3 className="text-sm font-medium line-clamp-2 mt-2">
+        {product.title.slice(0, 25)}...
+      </h3>
+
       </Link>
 
-      {/* HOVER ACTIONS */}
-      <div
-        className="
-          absolute inset-0 bg-black/40 flex items-center justify-center gap-3
-          opacity-0 group-hover:opacity-100 transition
-        "
+      {/* ⭐ RATING */}
+      <div className="text-orange-400 text-xs mt-1">
+        ★★★★☆ <span className="text-gray-500">(21k)</span>
+      </div>
+
+      <div className="flex justify-between items-center mt-2">
+        <p className="font-bold">${product.price}</p>
+
+        <button onClick={() => toggleWishlist(product)}>
+          <Heart
+            size={18}
+            fill={isWishlisted ? "red" : "none"}
+            className="text-red-500"
+          />
+        </button>
+      </div>
+
+      <button
+        onClick={handleAdd}
+        className="mt-3 w-full bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg text-sm"
       >
-        <button
-          onClick={() => addToCart(product)}
-          className="bg-orange-500 hover:bg-orange-600 text-white p-3 rounded-full"
-          title="Add to Cart"
-        >
-          <ShoppingCart size={18} />
-        </button>
-
-        <button
-          onClick={() => toggleWishlist(product)}
-          className={`p-3 rounded-full ${
-            isWishlisted
-              ? "bg-red-500 text-white"
-              : "bg-white text-gray-700 hover:text-red-500"
-          }`}
-          title="Add to Wishlist"
-        >
-          <Heart size={18} fill={isWishlisted ? "white" : "none"} />
-        </button>
-      </div>
-
-      {/* INFO */}
-      <div className="p-4 space-y-1">
-        <h3 className="text-sm font-medium text-gray-800 line-clamp-2">
-          {product.title}
-        </h3>
-        <p className="text-orange-500 font-semibold">
-          ${product.price}
-        </p>
-      </div>
+        Add to Cart
+      </button>
     </div>
   );
 };

@@ -1,30 +1,48 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../Context/AuthContext";
 
 const Login = () => {
   const { login, googleLogin } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // 🔥 redirect destination
+  const from = location.state?.from || "/";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
+  // ✅ EMAIL LOGIN
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
+
     try {
       await login(email, password);
-      navigate("/");
+      navigate(from, { replace: true }); // 👈 redirect back
     } catch (err) {
       setError("Invalid email or password");
+    }
+  };
+
+  // ✅ GOOGLE LOGIN
+  const handleGoogleLogin = async () => {
+    setError("");
+
+    try {
+      await googleLogin();
+      navigate(from, { replace: true }); // 👈 redirect back
+    } catch (err) {
+      setError("Google login failed");
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white w-full max-w-md rounded-xl shadow-lg p-8">
-        
+
         <h2 className="text-2xl font-semibold text-center text-gray-800">
           Welcome Back
         </h2>
@@ -38,6 +56,7 @@ const Login = () => {
           </p>
         )}
 
+        {/* 🔥 EMAIL LOGIN FORM */}
         <form onSubmit={handleLogin} className="mt-6 space-y-4">
           <input
             type="email"
@@ -60,23 +79,28 @@ const Login = () => {
           </button>
         </form>
 
+        {/* OR */}
         <div className="flex items-center my-6">
           <div className="flex-grow border-t"></div>
           <span className="mx-3 text-sm text-gray-400">OR</span>
           <div className="flex-grow border-t"></div>
         </div>
 
+        {/* 🔥 GOOGLE LOGIN */}
         <button
-          onClick={googleLogin}
+          onClick={handleGoogleLogin}
           className="w-full border rounded-lg py-2 flex items-center justify-center gap-2 hover:bg-gray-50"
         >
-          <span className="text-blue-600 font-semibold">●</span>
+          <span className="text-blue-600 font-semibold text-lg">G</span>
           Continue with Google
         </button>
 
         <p className="text-sm text-center text-gray-600 mt-6">
           New here?{" "}
-          <Link to="/register" className="text-orange-500 font-semibold hover:underline">
+          <Link
+            to="/register"
+            className="text-orange-500 font-semibold hover:underline"
+          >
             Create Account
           </Link>
         </p>

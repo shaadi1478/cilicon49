@@ -5,7 +5,7 @@ const Profile = () => {
   const { user, logout } = useAuth();
 
   return (
-    <div className="min-h-screen bg-gray-100 flex justify-center items-center px-4">
+    <div className=" bg-gray-100 flex justify-center items-center px-4">
       <div className="bg-white w-full max-w-md rounded-xl shadow-lg p-6">
         {/* HEADER */}
         <div className="flex flex-col items-center">

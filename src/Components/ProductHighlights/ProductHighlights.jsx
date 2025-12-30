@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+
 import phone from "../../assets/phone.png";
 import samsung from "../../assets/samsung.png";
 import tv from "../../assets/tv57.png";
@@ -44,6 +45,8 @@ const data = [
 ];
 
 const ProductHighlights = () => {
+  const [quickView, setQuickView] = useState(null);
+
   return (
     <section className="max-w-7xl mx-auto px-4 py-10">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -57,11 +60,12 @@ const ProductHighlights = () => {
               {col.items.map((item, i) => (
                 <div
                   key={i}
-                  className="flex items-center gap-4 bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition"
+                  onClick={() => setQuickView(item)}
+                  className="flex items-center gap-4 bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition cursor-pointer"
                 >
                   <img
                     src={item.image}
-                    alt=""
+                    alt={item.name}
                     className="w-14 h-14 object-contain"
                   />
                   <div>
@@ -78,6 +82,40 @@ const ProductHighlights = () => {
           </div>
         ))}
       </div>
+
+      {/* ================= QUICK VIEW MODAL ================= */}
+      {quickView && (
+        <div
+          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
+          onClick={() => setQuickView(null)}
+        >
+          <div
+            className="bg-white w-[90%] max-w-md rounded-xl p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={quickView.image}
+              alt={quickView.name}
+              className="h-40 mx-auto object-contain"
+            />
+
+            <h3 className="mt-4 font-semibold text-center">
+              {quickView.name}
+            </h3>
+
+            <p className="text-center text-blue-500 font-bold mt-2">
+              {quickView.price}
+            </p>
+
+            <button
+              onClick={() => setQuickView(null)}
+              className="mt-5 w-full bg-orange-500 text-white py-2 rounded-lg hover:bg-orange-600"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </section>
   );
 };
