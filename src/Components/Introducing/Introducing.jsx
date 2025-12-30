@@ -55,7 +55,7 @@ const Introducing = () => {
               <img
                 src={xiaomi}
                 alt=""
-                className="w-56 sm:w-64 md:h-73 md:w-auto"
+                className="w-56 sm:w-64 md:h-73 md:w-auto h-38"
               />
             </div>
           </div>

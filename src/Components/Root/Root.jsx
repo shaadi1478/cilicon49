@@ -5,7 +5,7 @@ import Navbar from '../Navbar/Navbar'
 
 const Root = () => {
   return (
-    <div className='pt-[120px]'>
+    <div className='md:pt-30 pt-11'>
         <Navbar />
 
       <Outlet />

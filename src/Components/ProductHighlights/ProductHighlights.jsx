@@ -49,9 +49,17 @@ const ProductHighlights = () => {
 
   return (
     <section className="max-w-7xl mx-auto px-4 py-10">
+      {/* ================= PRODUCT GRID ================= */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {data.map((col, index) => (
-          <div key={index}>
+          <div
+            key={index}
+            className={
+              col.title === "NEW ARRIVAL"
+                ? "hidden sm:block" // 👈 only mobile hide
+                : ""
+            }
+          >
             <h2 className="font-semibold text-sm mb-4 uppercase text-gray-800">
               {col.title}
             </h2>

@@ -17,16 +17,16 @@ const Home = () => {
         {/* Main Banner */}
         <div className="flex flex-col md:flex-row items-center gap-8 bg-gray-100 p-6 rounded-lg lg:w-2/3">
           <div className="flex-1 text-center md:text-left">
-            <h4 className="text-sm uppercase text-gray-500 mb-2">
+            <h4 className="md:text-sm text-xl uppercase text-gray-500 mb-2">
               THE BEST PLACE TO PLAY
             </h4>
-            <h1 className="text-3xl md:text-5xl font-bold mb-4">
+            <h1 className="text-5xl md:text-6xl font-bold mb-4">
               Xbox Consoles
             </h1>
             <p className="text-gray-700 mb-4">
               Save up to 50% on select Xbox games. Get 3 months of PC Game Pass for $2 USD.
             </p>
-            <button className="bg-orange-400 text-white px-4 py-2 rounded hover:bg-orange-500 transition">
+            <button to='shop' className="bg-orange-400 text-white px-4 py-2 rounded hover:bg-orange-500 transition">
               Shop Now
             </button>
           </div>
@@ -35,7 +35,7 @@ const Home = () => {
             <img
               src={consoles}
               alt="Xbox Consoles"
-              className="w-full rounded-lg"
+              className="w-full md:h-full h-64 rounded-lg"
             />
           </div>
         </div>
@@ -43,12 +43,13 @@ const Home = () => {
         {/* Secondary Banners */}
         <div className="flex flex-col gap-6 lg:w-1/3 ">
           {/* Google Pixel */}
-          <div className="flex flex-col sm:flex-row bg-gray-900 p-4 rounded-lg items-center gap-4 h-62">
-            <div className="text-center sm:text-left">
+          <div className="bg-gray-900 rounded-lg p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+            {/* TEXT */}
+            <div className="text-center sm:text-left flex-1">
               <h3 className="text-sm uppercase text-amber-300 mb-1">
                 Summer Sales
               </h3>
-              <h2 className="text-2xl font-semibold mb-2 text-white">
+              <h2 className="text-2xl font-semibold text-white mb-3">
                 New Google Pixel 6 Pro
               </h2>
               <button className="bg-orange-400 text-white px-4 py-2 rounded hover:bg-orange-500 transition">
@@ -56,37 +57,40 @@ const Home = () => {
               </button>
             </div>
 
-            <div>
+            {/* IMAGE */}
+            <div className="flex-1 flex justify-center">
               <img
                 src={PixelPro}
                 alt="Google Pixel 6 Pro"
-                className="w-full  rounded-lg"
+                className="h-40 object-contain"
               />
             </div>
           </div>
 
+
           {/* Xiaomi FlipBuds */}
-          <div className="bg-gray-100 p-4 rounded-lg flex flex-col sm:flex-row items-center gap-4 h-62">
-            <div className="flex-1">
+          <div className="bg-gray-100 rounded-lg p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+            {/* IMAGE */}
+            <div className="flex-1 flex justify-center order-2 sm:order-1">
               <img
                 src={AirBuds}
                 alt="Xiaomi FlipBuds Pro"
-                className="w-full rounded-lg"
+                className="h-36 object-contain"
               />
             </div>
 
-            <div className="text-center sm:text-left">
-              <h2 className="text-2xl font-bold mb-2">
+            {/* TEXT */}
+            <div className="text-center sm:text-left flex-1 order-1 sm:order-2">
+              <h2 className="text-2xl font-bold mb-1">
                 Xiaomi FlipBuds Pro
               </h2>
-              <p className="text-gray-700 mb-2">
-                $299 USD
-              </p>
+              <p className="text-gray-700 mb-3">$299 USD</p>
               <button className="bg-orange-400 text-white px-4 py-2 rounded hover:bg-orange-500 transition">
                 Shop Now
               </button>
             </div>
           </div>
+
 
         </div>
       </div>
